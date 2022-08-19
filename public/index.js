@@ -13,19 +13,6 @@ const light = new THREE.DirectionalLight(0x000000);
 
 scene.add(light);
 
-// Add lights
-// var hemiLight = new THREE.HemisphereLight(0xffff00, 0xffffff, 0.61);
-// hemiLight.position.set(0, 50, 0);
-// // Add hemisphere light to scene
-// scene.add(hemiLight);
-
-// var dirLight = new THREE.DirectionalLight(0xffffff, 0.54);
-// dirLight.position.set(-8, 12, 8);
-// dirLight.castShadow = true;
-// dirLight.shadow.mapSize = new THREE.Vector2(1024, 1024);
-// // Add directional Light to scene
-// scene.add(dirLight);
-
 let canvas = document.getElementById("c");
 const renderer = new THREE.WebGLRenderer({
   canvas,

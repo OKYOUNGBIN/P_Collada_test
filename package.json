@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "express": "^4.18.1",
+    "ray-tracing-renderer": "^0.10.15",
     "three": "^0.143.0"
   }
 }

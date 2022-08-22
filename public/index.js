@@ -1,6 +1,9 @@
 import * as THREE from "/three/build/three.module.js";
 import { ColladaLoader } from "/three/examples/jsm/loaders/ColladaLoader.js";
 import { OrbitControls } from "/three/examples/jsm/controls/OrbitControls.js";
+import { EffectComposer } from "/three/examples/jsm/postprocessing/EffectComposer.js";
+//import { RenderPass } from "/three/examples/jsm/postprocessing/RenderPass.js";
+//import { GlitchPass } from "/three/examples/jsm/postprocessing/GlitchPass.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -9,9 +12,28 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-const light = new THREE.DirectionalLight(0x000000);
+// var sunlight = new THREE.DirectionalLight(0xffffff, 1);
+// sunlight.position.set(10, 10, 10);
+// sunlight.decay = 1;
+// sunlight.castShadow = true;
+// sunlight.shadow.mapSize.width = 1024;
+// sunlight.shadow.mapSize.height = 1024;
+// sunlight.shadow.camera.top = 15;
+// sunlight.shadow.camera.bottom = -15;
+// sunlight.shadow.camera.left = -15;
+// sunlight.shadow.camera.right = 15;
+// scene.add(sunlight);
 
+let light = new THREE.SpotLight(0xffa95c, 4);
+light.position.set(-50, 50, 50);
+light.castShadow = true;
+light.shadow.bias = -0.0001;
+light.shadow.mapSize.width = 1024 * 4;
+light.shadow.mapSize.height = 1024 * 4;
 scene.add(light);
+
+let hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
+scene.add(hemiLight);
 
 let canvas = document.getElementById("c");
 const renderer = new THREE.WebGLRenderer({
@@ -19,13 +41,24 @@ const renderer = new THREE.WebGLRenderer({
   alpha: true,
   antialias: true,
 });
-document.body.prepend(renderer.domElement);
+const composer = new EffectComposer(renderer);
+renderer.toneMapping = THREE.ReinhardToneMapping;
+renderer.toneMappingExposure = 2.3;
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
 
 var loader = new ColladaLoader();
-loader.load("/Handgun_dae.dae", function (collada) {
-  var animations = collada.animations;
+loader.load("/dreamtech_alt_revised_22.dae", function (collada) {
   var avatar = collada.scene;
 
+  avatar.traverse((n) => {
+    if (n.isMesh) {
+      n.castShadow = true;
+      n.receiveShadow = true;
+      if (n.material.map) n.material.map.anisotropy = 1;
+    }
+  });
   scene.add(avatar);
 });
 
@@ -70,8 +103,7 @@ function animate() {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateWorldMatrix();
   }
+  composer.render();
 }
-
-animate();
 
 animate();

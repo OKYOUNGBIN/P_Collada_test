@@ -1,5 +1,4 @@
-const require = createRequire(import.meta.url);
-var http = require("http");
+let http = require("http");
 const express = require("express");
 const app = express();
 const port = 8000;

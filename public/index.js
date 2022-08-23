@@ -1,52 +1,37 @@
 import * as THREE from "/three/build/three.module.js";
+import { WebGLRenderer } from "/three/build/three.module.js";
 import { ColladaLoader } from "/three/examples/jsm/loaders/ColladaLoader.js";
 import { OrbitControls } from "/three/examples/jsm/controls/OrbitControls.js";
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
-// var sunlight = new THREE.DirectionalLight(0xffffff, 1);
-// sunlight.position.set(10, 10, 10);
-// sunlight.decay = 1;
-// sunlight.castShadow = true;
-// sunlight.shadow.mapSize.width = 1024;
-// sunlight.shadow.mapSize.height = 1024;
-// sunlight.shadow.camera.top = 15;
-// sunlight.shadow.camera.bottom = -15;
-// sunlight.shadow.camera.left = -15;
-// sunlight.shadow.camera.right = 15;
-// scene.add(sunlight);
 
-let light = new THREE.SpotLight(0xffffff, 4);
-light.position.set(-50, 50, 50);
-light.castShadow = true;
-light.shadow.bias = -0.0001;
-light.shadow.mapSize.width = 1024 * 4;
-light.shadow.mapSize.height = 1024 * 4;
-scene.add(light);
+const light = new THREE.DirectionalLight(0xffffff);
+const helper = new THREE.DirectionalLightHelper(light, 5);
+scene.add(helper);
 
 // let hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
 // scene.add(hemiLight);
 
-let canvas = document.getElementById("c");
-const renderer = new THREE.WebGLRenderer({
+// let light = new THREE.SpotLight(0xffa95c,4);
+// light.position.set(100,100,100);
+// light.castShadow = true;
+// light.shadow.bias = -0.0001;
+// light.shadow.mapSize.width = 1024*4;
+// light.shadow.mapSize.height = 1024*4;
+// scene.add( light );
+
+const material = new THREE.MeshPhysicalMaterial();
+const renderer = new WebGLRenderer({
   canvas,
   alpha: true,
   antialias: true,
 });
-
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 2.3;
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-document.body.appendChild(renderer.domElement);
-
-const material = new THREE.MeshPhysicalMaterial();
-
 let loader = new ColladaLoader();
 loader.load("/dreamtech_alt_revised_22.dae", function (collada) {
   let avatar = collada.scene;
@@ -76,6 +61,7 @@ loader.load("/dreamtech_alt_revised_22.dae", function (collada) {
 let oribitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(100, 100, 100);
 oribitControls.update();
+camera.position.set(10, 10, 10);
 
 function resizeRendererToDisplaySize(renderer) {
   canvas = renderer.domElement;

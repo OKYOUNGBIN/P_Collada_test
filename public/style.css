@@ -4,6 +4,7 @@
   box-sizing: border-box;
   overflow: hidden;
 }
+
 .dg {
   position: fixed;
   top: 0;

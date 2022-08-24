@@ -1,6 +1,8 @@
 import * as THREE from "/three/build/three.module.js";
 import { WebGLRenderer } from "/three/build/three.module.js";
-import { ColladaLoader } from "/three/examples/jsm/loaders/ColladaLoader.js";
+//import { ColladaLoader } from "/three/examples/jsm/loaders/ColladaLoader.js";
+import { FBXLoader } from "/three/examples/jsm/loaders/FBXLoader.js";
+//import { GLTFLoader } from "/three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "/three/examples/jsm/controls/OrbitControls.js";
 
 let scene = new THREE.Scene();
@@ -26,37 +28,59 @@ scene.add(helper);
 // light.shadow.mapSize.height = 1024*4;
 // scene.add( light );
 
-const material = new THREE.MeshPhysicalMaterial();
+let canvas = document.getElementById("c");
 const renderer = new WebGLRenderer({
   canvas,
   alpha: true,
   antialias: true,
 });
-let loader = new ColladaLoader();
-loader.load("/dreamtech_alt_revised_22.dae", function (collada) {
-  let avatar = collada.scene;
+const fbxLoader = new FBXLoader();
+fbxLoader.load(
+  "/dreamtech.fbx",
+  (object) => {
+    // object.traverse(function (child) {
+    //     if ((child as THREE.Mesh).isMesh) {
+    //         // (child as THREE.Mesh).material = material
+    //         if ((child as THREE.Mesh).material) {
+    //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
+    //         }
+    //     }
+    // })
+    // object.scale.set(.01, .01, .01)
+    object.scale.set(0.01, 0.01, 0.01);
+    scene.add(object);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (error) => {
+    console.log(error);
+  }
+);
 
-  avatar.geometry = collada.scene.children[0].children[0].geometry;
-  avatar.material = collada.scene.children[0].children[0].material;
-  avatar.material = material;
+// let loader = new ColladaLoader();
+// loader.load("/dreamtech_alt_revised_22.dae", function (collada) {
+//   let avatar = collada.scene;
+//   avatar.geometry = collada.scene.children[0].children[0].geometry;
+//   avatar.material = collada.scene.children[0].children[0].material;
+//   avatar.material = material;
+//   avatar.traverse((child) => {
+//     if (child.isMesh) {
+//       child.castShadow = true;
+//       child.receiveShadow = true;
+//       if (child.material.map) {
+//         child.material.map.anisotropy = 1;
+//         child.material = new THREE.MeshPhongMaterial({
+//           side: THREE.DoubleSide,
+//         });
+//       }
+//     }
+//   });
+//   avatar.scale.set(0.01, 0.01, 0.01);
 
-  avatar.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-      if (child.material.map) {
-        child.material.map.anisotropy = 1;
-        child.material = new THREE.MeshPhongMaterial({
-          side: THREE.DoubleSide,
-        });
-      }
-    }
-  });
-  avatar.scale.set(0.01, 0.01, 0.01);
-
-  scene.add(avatar);
-  console.log(avatar);
-});
+//   scene.add(avatar);
+//   console.log(avatar);
+// });
 
 let oribitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(100, 100, 100);
